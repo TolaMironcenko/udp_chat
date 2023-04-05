@@ -1,6 +1,6 @@
 build:
-	clang++ -o server server.cpp
-	clang++ -o client client.cpp -std=c++11
+	g++ -o server server.cpp
+	g++ -o client client.cpp -std=c++14 -lpthread
 
 runserver:
 	./server 127.0.0.1 8000

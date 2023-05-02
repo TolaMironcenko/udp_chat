@@ -8,14 +8,17 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <thread>
-
-using namespace std;
+#include "colors.h"
 
 void send_message(int sockfd, struct sockaddr_in addr) {
 	while (1) {
 		char buffer[1024];
 		bzero(buffer, 1024);
-		cin.getline(buffer, 1024);
+		std::cin.getline(buffer, 1024);
+		if(!strcmp(buffer, "quit")) {
+			std::cout << GREEN << "you are exited.\n" << RESET; 
+			exit(0);
+		}
 		sendto(sockfd, buffer, 1024, 0, (struct sockaddr*)&addr, sizeof(addr));
 	}
 }
@@ -51,19 +54,19 @@ int main(int argc, char** argv) {
 	addr.sin_addr.s_addr = inet_addr(ip);
 
 	char username[50];
-	cout << "Enter tour username:" << endl;
+	std::cout << "Enter tour username:\n\t" << GREEN;
 	bzero(username, 50);
-	cin.getline(username, 50);
+	std::cin.getline(username, 50);
 	sendto(sockfd, username, 50, 0, (struct sockaddr*)&addr, sizeof(addr));
-	cout << "Your username: " << username << endl;
+	std::cout << RESET << "Your username: " << GREEN << username << RESET << std::endl;
 
-	thread t1(send_message, sockfd, addr);
+	std::thread t1(send_message, sockfd, addr);
 
 	while (1) {
 		bzero(buffer, 1024);
 		addr_size = sizeof(addr);
 		recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*)&addr, &addr_size);
-		cout << buffer << endl;
+		std::cout << buffer << std::endl;
 	}
     
 

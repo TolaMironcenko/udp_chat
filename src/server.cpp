@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -9,8 +10,9 @@
 #include <netinet/in.h>
 #include <typeinfo>
 #include <ctime>
+#include "colors.h"
 
-using namespace std;
+#define LOGFILE "udpchatserver.log"
 
 //структура одного клиента на сервере
 struct client_t {
@@ -36,7 +38,6 @@ int main(int argc, char** argv) {
 		printf("Usage: %s ip port\n", argv[0]);
 		exit(0);
 	}
-
 	char* ip = argv[1];
 	int port = atoi(argv[2]);
 
@@ -67,7 +68,7 @@ int main(int argc, char** argv) {
 	unsigned int clientlength = sizeof(client_addr);
 
 	for (int i = 0; i < num_of_clients; i++) {
-		cout << clients[i].addr.sin_port << clients[i].addr.sin_addr.s_addr << ";";
+		std::cout << clients[i].addr.sin_port << clients[i].addr.sin_addr.s_addr << ";";
 	}
 
 
@@ -92,7 +93,7 @@ int main(int argc, char** argv) {
 			clientlength = sizeof(client_addr);
 			int bytesin = recvfrom(sockfd, buffer, 1024, 0, (sockaddr *) &client_addr, &clientlength);
 			if (bytesin < 0) {
-				cout << "error receving from client" << endl;
+				std::cout << "error receving from client\n";
 				continue;
 			}
 			if (!HaveClient(client_addr)) {
@@ -107,22 +108,40 @@ int main(int argc, char** argv) {
 				for (int i = 0; i < num_of_clients; i++) {
 					if (clients[i].addr.sin_port != 0 && clients[i].addr.sin_addr.s_addr != 0) {
 						if (!(clients[i].addr.sin_port == client_addr.sin_port && clients[i].addr.sin_addr.s_addr == client_addr.sin_addr.s_addr)) {
-							char res[1024];
-							char time[128];
-							std::time_t t = std::time(nullptr);
-    						std::tm* now = std::localtime(&t);
-    						strftime(time, sizeof(time), "%X", now);
+							if (strcmp(buffer, "")) {
+								std::ofstream logfile(LOGFILE, std::ios::app);
+								char res[1024];
+								char logres[1024];
+								char time[128];
+								memset(&logres, '\0', 1024);
+								memset(&res, '\0', 1024);
+								memset(&time, '\0', 128);
+								std::time_t t = std::time(nullptr);
+	    						std::tm* now = std::localtime(&t);
+	    						strftime(time, sizeof(time), "%X", now);
 
-    						for (int i = 0; i < num_of_clients; i++) {
-								if (clients[i].addr.sin_addr.s_addr == client_addr.sin_addr.s_addr && clients[i].addr.sin_port == client_addr.sin_port) {
-									strcpy(res, clients[i].username);
+	    						for (int i = 0; i < num_of_clients; i++) {
+									if (clients[i].addr.sin_addr.s_addr == client_addr.sin_addr.s_addr && clients[i].addr.sin_port == client_addr.sin_port) {
+										strcpy(res, GREEN);
+										strcat(res, clients[i].username);
+										strcat(logres, clients[i].username);
+									}
 								}
+								strcat(res, BLUE " [ ");
+								strcat(res, time);
+								strcat(res, " ] " RESET ": " YELLOW);
+								strcat(res, buffer);
+								strcat(res, RESET);
+								sendto(sockfd, res, 1024, 0, (sockaddr *) &clients[i].addr, sizeof(clients[i].addr));
+								printf("[ i ] %s\n", res);
+								strcat(logres, " [ ");
+								strcat(logres, time);
+								strcat(logres, " ] : ");
+								strcat(logres, buffer);
+								logfile << "[ i ] " << logres << "\n";
+								logfile.close();
+								// fprintf(logfile, "[ i ] %s\n", res);
 							}
-							strcat(res, " [");
-							strcat(res, time);
-							strcat(res, "] : ");
-							strcat(res, buffer);
-							sendto(sockfd, res, 1024, 0, (sockaddr *) &clients[i].addr, sizeof(clients[i].addr));
 						}
 					}
 				}

@@ -12,10 +12,10 @@ build:
 	upx $(DESTDIR)client
 
 runserver:
-	./server 127.0.0.1 8000
+	$(DESTDIR)server 127.0.0.1 8000
 
 runclient:
-	./client 127.0.0.1 8000
+	$(DESTDIR)client 127.0.0.1 8000
 
 install:
 	cp -rf $(DESTDIR)server $(INSTALL_DIR)udpchatserver

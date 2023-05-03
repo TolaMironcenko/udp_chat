@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 	addr.sin_addr.s_addr = inet_addr(ip);
 
 	char username[50];
-	std::cout << "Enter tour username:\n\t" << GREEN;
+	std::cout << "Enter your username:\n\t" << GREEN;
 	bzero(username, 50);
 	std::cin.getline(username, 50);
 	sendto(sockfd, username, 50, 0, (struct sockaddr*)&addr, sizeof(addr));

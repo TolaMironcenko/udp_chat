@@ -28,6 +28,7 @@ runclient:
 	@$(DESTDIR)client 127.0.0.1 43243
 
 install:
+	@mkdir -p $(INSTALL_DIR)
 	@echo -e "$(GREEN)[ $(YELLOW)50% $(GREEN)] $(RESET)INSTALL SERVER"
 	@cp -rf $(DESTDIR)server $(INSTALL_DIR)udpchatserver
 	@echo -e "$(GREEN)[ $(YELLOW)100% $(GREEN)] $(RESET)INSTALL CLIENT"

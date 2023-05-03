@@ -1,4 +1,25 @@
 # UDP_CHAT
 
-### Чтобы собрать проект с помощью clang нужно написать make build и вы получите два файла server и client. Make должен быть заранее установлен так же как и 
-### clang. После сборки проекта просто запускаем 2 скомпилированных файла и пользуемся.
+## BUILDING
+```bash
+make build
+```
+
+## INSTALLING
+```
+sudo make install
+```
+
+## MAKING DEB PACKAGE
+```
+make debpkg
+```
+
+## MAKING ARCHLINUX PACKAGE
+```
+make archlinuxpkg
+```
+### OR
+```
+makepkg -f
+```

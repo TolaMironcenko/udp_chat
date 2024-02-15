@@ -20,9 +20,9 @@ build:
 	@echo -e "$(GREEN)[ $(YELLOW)50% $(GREEN)] $(RESET)CC CLIENT"
 	@$(CXX) -o $(DESTDIR)client $(SRC_CLIENT) $(CXX_FLAGS)
 	@echo -e "$(GREEN)[ $(YELLOW)75% $(GREEN)] $(RESET)STRIP SERVER"
-	@upx $(DESTDIR)server >> /dev/null
+	@strip $(DESTDIR)server >> /dev/null
 	@echo -e "$(GREEN)[ $(YELLOW)100% $(GREEN)] $(RESET)STRIP CLIENT"
-	@upx $(DESTDIR)client >> /dev/null
+	@strip $(DESTDIR)client >> /dev/null
 	@echo -e "$(GREEN)BUILD SUCCESS$(RESET)"
 
 runserver:
